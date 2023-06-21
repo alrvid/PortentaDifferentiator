@@ -20,12 +20,12 @@
 
 enum BoardTypes : uint8_t
 {
-  BOARD_ERROR,
+  BOARD_UNKNOWN,
   BOARD_MACHINE_CONTROL,
   BOARD_PORTENTA
 };
 
-enum BoardTypes getBoardType()
+enum BoardTypes detectPortentaH7TypeOnce()
 {
   int inAfterUp, inAfterDown;
   mbed::DigitalIn vbusPin(PB_14);
@@ -57,8 +57,23 @@ enum BoardTypes getBoardType()
   }
   else
   {
-    return BOARD_ERROR;   // Illegal state, detection failed
+    return BOARD_UNKNOWN;   // Illegal state, detection failed
   }
+}
+
+enum BoardTypes detectPortentaH7Type()
+{
+  enum BoardTypes boardType = detectPortentaH7TypeOnce();
+  // Repeat the test a few times to avoid incorrect
+  // results because of electrical interference
+  for (int i=0; i<5; i++)
+  {
+    if (boardType != detectPortentaH7TypeOnce())
+    {
+      return BOARD_UNKNOWN;
+    }
+  }
+  return boardType;
 }
 
 void setup() {
@@ -66,7 +81,7 @@ void setup() {
   Serial.begin(9600);
   while (!Serial) ;
 
-  enum BoardTypes boardType = getBoardType();
+  enum BoardTypes boardType = detectPortentaH7Type();
   switch (boardType)
   {
     case BOARD_PORTENTA:
@@ -75,7 +90,7 @@ void setup() {
     case BOARD_MACHINE_CONTROL:
       Serial.println("The board is a Portenta Machine Control");
       break;
-    case BOARD_ERROR:
+    case BOARD_UNKNOWN:
       Serial.println("The board couldn't be reliably detected");
       break;
   }
