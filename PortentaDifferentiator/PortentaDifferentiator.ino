@@ -68,7 +68,7 @@ enum BoardTypes detectPortentaH7TypeOnce()
 enum BoardTypes detectPortentaH7Type()
 {
   enum BoardTypes boardType = detectPortentaH7TypeOnce();
-  // Repeat the test a few times to avoid incorrect
+  // Repeat the test a few times to mitigate incorrect
   // results because of electrical interference
   for (int i=0; i<5; i++)
   {
