@@ -25,6 +25,8 @@ enum BoardTypes : uint8_t
   BOARD_PORTENTA
 };
 
+// WARNING: This algorithm has been tested for radiated interference immunity with a
+// chattering relay device, so please don't modify it without running such a test again!
 enum BoardTypes detectPortentaH7TypeOnce()
 {
   int inAfterUp, inAfterDown;
@@ -61,6 +63,8 @@ enum BoardTypes detectPortentaH7TypeOnce()
   }
 }
 
+// WARNING: This algorithm has been tested for radiated interference immunity with a
+// chattering relay device, so please don't modify it without running such a test again!
 enum BoardTypes detectPortentaH7Type()
 {
   enum BoardTypes boardType = detectPortentaH7TypeOnce();
