@@ -40,18 +40,24 @@ enum BoardTypes detectPortentaH7TypeOnce()
   // Inject low level into input, wait 1 ms to settle
   vbusPin.mode(PullDown);
   delay(1);
-  // Shortly float the input and read the state
+  // Shortly float the input
   vbusPin.mode(PullNone);
+  // Give the external pull-up resistor on the Portenta Machine control enough time to
+  // raise the voltage to an acceptable high
+  delayMicroseconds(50);
+  // Read the state
   inAfterDown = vbusPin.read();
   // End floating state and leave the input in pull-up state
   vbusPin.mode(PullUp);
   // The Machine Control has an external pull-up resistor
   // and will never float, the input is always 1.
-  // A plain board floats, and the input follows the
+  // A plain H7 board floats, and the input follows the
   // previously injected level, first 1 and then 0.
+  // H7 plus Vision Shield or Breakout Board count as plain
+  // boards too.
   if ((1 == inAfterUp) && (0 == inAfterDown))
   {
-    return BOARD_PORTENTA;
+    return BOARD_PORTENTA_H7;
   }
   if ((1 == inAfterUp) && (1 == inAfterDown))
   {
